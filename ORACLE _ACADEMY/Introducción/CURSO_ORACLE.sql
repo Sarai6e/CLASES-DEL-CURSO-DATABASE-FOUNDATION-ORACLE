@@ -1,0 +1,1 @@
+select user from dual;
