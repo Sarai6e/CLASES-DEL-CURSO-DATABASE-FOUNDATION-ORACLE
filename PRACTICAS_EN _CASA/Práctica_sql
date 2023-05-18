@@ -1,0 +1,7 @@
+--Base de datos de un restaurante
+Copy code
+CREATE DATABASE el_sanson;
+USE el_sanson;
+Crear las tablas:
+sql
+Copy code
