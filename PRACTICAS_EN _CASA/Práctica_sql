@@ -1,7 +1,93 @@
---Base de datos de un restaurante
-Copy code
-CREATE DATABASE el_sanson;
+--Base de datos de un restaurante llamado "El sanson"
 USE el_sanson;
-Crear las tablas:
-sql
-Copy code
+-- Tabla de clientes
+CREATE TABLE clientes (
+  id_cliente INT PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL,
+  apellido VARCHAR(50) NOT NULL,
+  telefono VARCHAR(15),
+  direccion VARCHAR(100)
+);
+
+-- Tabla de mesas
+CREATE TABLE mesas (
+  id_mesa INT PRIMARY KEY,
+  capacidad INT NOT NULL,
+  ubicacion VARCHAR(50) NOT NULL
+);
+
+-- Tabla de reservas
+CREATE TABLE reservas (
+  id_reserva INT PRIMARY KEY,
+  id_cliente INT NOT NULL,
+  fecha DATE NOT NULL,
+  hora TIME NOT NULL,
+  num_personas INT NOT NULL,
+  estado VARCHAR(20) NOT NULL,
+  FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
+);
+
+-- Tabla de platos
+CREATE TABLE platos (
+  id_plato INT PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL,
+  descripcion VARCHAR(100),
+  precio DECIMAL(8,2) NOT NULL,
+  id_categoria INT NOT NULL,
+  FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
+);
+
+-- Tabla de categorías de platos
+CREATE TABLE categorias (
+  id_categoria INT PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL
+);
+
+-- Tabla de pedidos
+CREATE TABLE pedidos (
+  id_pedido INT PRIMARY KEY,
+  id_reserva INT NOT NULL,
+  fecha DATE NOT NULL,
+  hora TIME NOT NULL,
+  estado VARCHAR(20) NOT NULL,
+  total DECIMAL(8,2) NOT NULL,
+  id_metodo_pago INT NOT NULL,
+  FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva),
+  FOREIGN KEY (id_metodo_pago) REFERENCES metodos_pago(id_metodo_pago)
+);
+
+-- Tabla de detalles del pedido
+CREATE TABLE detalles_pedido (
+  id_pedido INT NOT NULL,
+  id_plato INT NOT NULL,
+  cantidad INT NOT NULL,
+  subtotal DECIMAL(8,2) NOT NULL,
+  PRIMARY KEY (id_pedido, id_plato),
+  FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
+  FOREIGN KEY (id_plato) REFERENCES platos(id_plato)
+);
+
+-- Tabla de métodos de pago
+CREATE TABLE metodos_pago (
+  id_metodo_pago INT PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL
+);
+
+-- Tabla de entregas (delivery)
+CREATE TABLE entregas (
+  id_entrega INT PRIMARY KEY,
+  id_reserva INT NOT NULL,
+  direccion_entrega VARCHAR(100) NOT NULL,
+  fecha DATE NOT NULL,
+  hora TIME NOT NULL,
+  estado VARCHAR(20) NOT NULL,
+  id_metodo_pago INT NOT NULL,
+  FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva),
+  FOREIGN KEY (id_metodo_pago) REFERENCES metodos_pago(id_metodo_pago)
+);
+
+-- Insertar categorías de platos
+INSERT INTO categorias (id_categoria, nombre) VALUES (1, 'Comida ejecutiva');
+INSERT INTO categorias (id_categoria, nombre) VALUES (2, 'Comida tradicional');
+INSERT INTO categorias (id_categoria, nombre) VALUES (3, 'Postres');
+INSERT INTO categorias (id_categoria, nombre) VALUES (4, 'Comida vegana y marina');
